@@ -249,7 +249,7 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
                 modifier = Modifier.width(200.dp)
             ) {
                 Text(
-                    text = "Sign Up",
+                    text = "Log In",
                     color = Color.Black,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
