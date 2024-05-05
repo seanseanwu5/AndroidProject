@@ -30,7 +30,9 @@ fun SuccessScreen(navController: NavController, vm: FbViewModel) {
             contentDescription = "lu",
             modifier = Modifier
                 .padding(vertical = 16.dp)
-                .clickable { /* 在这执行点击顶部图片的操作 */ }
+                .clickable {
+                    navController.navigate("clock")
+                }
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -46,7 +48,7 @@ fun SuccessScreen(navController: NavController, vm: FbViewModel) {
                     modifier = Modifier
                         .weight(1f)
                         .size(100.dp)
-                        .clickable { /* 在这执行点击第一张maria图片的操作 */ }
+                        .clickable { /* 在这执行点击第二张maria图片的操作 */ }
                 )
 
                 Image(
