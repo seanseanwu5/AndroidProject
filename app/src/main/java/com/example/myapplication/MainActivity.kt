@@ -76,6 +76,9 @@ fun AuthenticationApp() {
         composable("piano") {
             ClockScreen()
         }
+        composable("bus") {
+            com.example.myapplication.auth.BusScreen()
+        }
     }
 }
 //下面是好像有問題YT的
