@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.auth.ClockScreen
+import com.example.myapplication.auth.GameScreen
 import com.example.myapplication.auth.LoginScreen
 import com.example.myapplication.auth.MainScreen
 import com.example.myapplication.auth.SignupScreen
@@ -72,7 +73,7 @@ fun AuthenticationApp() {
         composable(DestinationScreen.Success.route) {
             SuccessScreen(navController, vm)
         }
-        composable("clock") {
+        composable("piano") {
             ClockScreen()
         }
     }

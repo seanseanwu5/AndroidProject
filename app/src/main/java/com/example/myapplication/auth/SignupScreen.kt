@@ -63,7 +63,7 @@ fun SignupScreen(navController: NavController, vm: FbViewModel) {
     var plength by remember { mutableStateOf(false) }
 
     Image(
-        painter = painterResource(id = R.drawable.rd),
+        painter = painterResource(id = R.drawable.ss),
         contentDescription = null,
         contentScale = ContentScale.FillBounds,
         modifier = Modifier.fillMaxSize()
@@ -87,7 +87,7 @@ fun SignupScreen(navController: NavController, vm: FbViewModel) {
             )
     ) {
         Text(
-            text = "User Signup",
+            text = "使用者註冊",
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = 40.sp
@@ -95,7 +95,7 @@ fun SignupScreen(navController: NavController, vm: FbViewModel) {
         Spacer(modifier = Modifier.height(50.dp))
         if (errorE) {
             Text(
-                text = "Enter email",
+                text = "輸入帳號",
                 color = Color.Red,
                 modifier = Modifier.padding(end = 100.dp)
             )
@@ -106,7 +106,7 @@ fun SignupScreen(navController: NavController, vm: FbViewModel) {
                 email = it
             },
             label = {
-                Text(text = "Email")
+                Text(text = "帳號")
             },
             leadingIcon = {
                 Icon(
@@ -152,14 +152,14 @@ fun SignupScreen(navController: NavController, vm: FbViewModel) {
         Spacer(modifier = Modifier.height(30.dp))
         if (errorP) {
             Text(
-                text = "Entre Password",
+                text = "輸入密碼",
                 color = Color.Red,
                 modifier = Modifier.padding(end = 100.dp)
             )
         }
         if (plength) {
             Text(
-                text = "Password must be 6 characters",
+                text = "密碼至少要6個字以上",
                 color = Color.Red,
                 modifier = Modifier.padding(end = 100.dp)
             )
@@ -171,7 +171,7 @@ fun SignupScreen(navController: NavController, vm: FbViewModel) {
                 plength = it.length < 6
             },
             label = {
-                Text(text = "Password")
+                Text(text = "密碼")
             },
             leadingIcon = {
                 Icon(
@@ -232,14 +232,14 @@ fun SignupScreen(navController: NavController, vm: FbViewModel) {
         Spacer(modifier = Modifier.height(30.dp))
         if (errorCP){
             Text(
-                text = "Password Not Math",
+                text = "密碼不符合",
                 color = Color.Red,
                 modifier = Modifier.padding(end = 100.dp)
             )
         }
         if (errorC){
             Text(
-                text = "Entre Conform Password",
+                text = "輸入確認密碼",
                 color = Color.Red,
                 modifier = Modifier.padding(end = 100.dp)
             )
@@ -250,7 +250,7 @@ fun SignupScreen(navController: NavController, vm: FbViewModel) {
                 cpassword = it
             },
             label = {
-                Text(text = "Conform Password")
+                Text(text = "確認密碼")
             },
             leadingIcon = {
                 Icon(
@@ -352,7 +352,7 @@ fun SignupScreen(navController: NavController, vm: FbViewModel) {
                 modifier = Modifier.width(200.dp)
             ) {
                 Text(
-                    text = "Sign Up",
+                    text = "註冊",
                     color = Color.Black,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold

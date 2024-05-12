@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,6 +44,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.myapplication.DestinationScreen
 import com.example.myapplication.FbViewModel
 import com.example.myapplication.R
@@ -57,13 +62,28 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
     var passwordVisibility by remember { mutableStateOf(false) }
     var errorE by remember { mutableStateOf(false) }
     var errorP by remember { mutableStateOf(false) }
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.moon))
 
     Image(
-        painter = painterResource(id = R.drawable.gr),
+        painter = painterResource(id = R.drawable.ls),
         contentDescription = null,
         contentScale = ContentScale.FillBounds,
         modifier = Modifier.fillMaxSize()
     )
+//////////////////////////////////////////////////////////
+    Box(
+        contentAlignment = Alignment.BottomStart, // Box 容器根据这个属性来定位内容
+        modifier = Modifier.fillMaxSize() // Box 容器填滿整个屏幕
+    ) {
+    LottieAnimation(
+        composition,
+        modifier = Modifier
+            .size(200.dp) // 这里设置动画的大小
+            .align(Alignment.BottomStart) // 定位到左下角
+            .padding(start = 16.dp, bottom = 16.dp), // 根据需要可以添加填充来调整精确位置
+        iterations = LottieConstants.IterateForever // 动画无限重复
+    )
+////////////////////////////////////////////////////////////
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -83,7 +103,7 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
             )
     ) {
         Text(
-            text = "User Login",
+            text = "使用者登入",
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = 40.sp
@@ -91,7 +111,7 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
         Spacer(modifier = Modifier.height(50.dp))
         if (errorE) {
             Text(
-                text = "Enter email",
+                text = "輸入帳號",
                 color = Color.Red,
                 modifier = Modifier.padding(end = 100.dp)
             )
@@ -102,7 +122,7 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
                 email = it
             },
             label = {
-                Text(text = "Email")
+                Text(text = "帳號")
             },
             leadingIcon = {
                 Icon(
@@ -148,7 +168,7 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
         Spacer(modifier = Modifier.height(30.dp))
         if (errorP) {
             Text(
-                text = "Entre Password",
+                text = "輸入密碼",
                 color = Color.Red,
                 modifier = Modifier.padding(end = 100.dp)
             )
@@ -159,7 +179,7 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
                 password = it
             },
             label = {
-                Text(text = "Password")
+                Text(text = "密碼")
             },
             leadingIcon = {
                 Icon(
@@ -249,7 +269,7 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
                 modifier = Modifier.width(200.dp)
             ) {
                 Text(
-                    text = "Log In",
+                    text = "登入",
                     color = Color.Black,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
@@ -259,6 +279,7 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
                 navController.navigate(DestinationScreen.Success.route)
             }
             vm.signedIn.value = false
+            }
         }
     }
 }

@@ -31,7 +31,7 @@ fun SuccessScreen(navController: NavController, vm: FbViewModel) {
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .clickable {
-                    navController.navigate("clock")
+                    navController.navigate("piano")
                 }
         )
 
