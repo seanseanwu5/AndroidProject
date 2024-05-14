@@ -13,6 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.auth.GameScreen
 import com.example.myapplication.auth.LoginScreen
 import com.example.myapplication.auth.MainScreen
 import com.example.myapplication.auth.MemeScreen
@@ -81,6 +82,9 @@ fun AuthenticationApp(onBackPressedDispatcher: OnBackPressedDispatcher) {
         }
         composable("meme") {
             MemeScreen(navController)
+        }
+        composable("game"){
+            GameScreen(navController)
         }
     }
 }

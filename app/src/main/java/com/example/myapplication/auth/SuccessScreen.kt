@@ -54,6 +54,14 @@ fun SuccessScreen(navController: NavController, vm: FbViewModel) {
         restartOnPlay = false
     )
 
+    val brainComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.brain))
+    val brainProgress by animateLottieCompositionAsState(
+        composition = stopComposition,
+        iterations = LottieConstants.IterateForever,
+        isPlaying = true,
+        restartOnPlay = false
+    )
+
     // 背景图相关的Painter
     val backgroundImage: Painter = painterResource(id = R.drawable.sus)
     Box(modifier = Modifier.fillMaxSize()) {
@@ -107,6 +115,18 @@ fun SuccessScreen(navController: NavController, vm: FbViewModel) {
             )
 
             Spacer(Modifier.weight(1f)) // Spacer使下面的元素靠底部
+
+
+            LottieAnimation(
+                composition = brainComposition,
+                progress = brainProgress,
+                modifier = Modifier
+                    .size(150.dp)
+                    .padding(top = 16.dp)
+                    .clickable { navController.navigate("game") }
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

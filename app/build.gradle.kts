@@ -87,7 +87,7 @@ dependencies {
 
     implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
 
-
-
-//    implementation ("androidx.security:security-crypto:1.1.0-alpha03")
+    ////////////////////////////////////////////////////////////////////
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    ////////////////////////////////////////////////////////////////////
 }
