@@ -64,6 +64,7 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
     var errorP by remember { mutableStateOf(false) }
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.moon))
 
+
     Image(
         painter = painterResource(id = R.drawable.ls),
         contentDescription = null,
