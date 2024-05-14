@@ -28,11 +28,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.myapplication.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-// 使用卡片背面的图片资源ID
 val CARD_BACK_IMAGE = R.drawable.card_back
 
 @Composable
@@ -40,31 +44,40 @@ fun GameScreen(navController: NavController) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // 生成卡片图片资源ID，并对它们进行混洗
     val images = remember { generateImages(context) }
 
-    // 跟踪每张卡的翻面状态
     val selectedImages = remember { mutableStateListOf<Boolean>().apply { addAll(List(images.size) { false }) } }
-
-    // 跟踪是否有卡片被选中，以及它们是否匹配
     val isMatched = remember { mutableStateListOf<Boolean>().apply { addAll(List(images.size) { false }) } }
 
-    // 跟踪找到的对数
     var foundPairs by remember { mutableStateOf(0) }
-
-    // 最后一次选中的卡片索引
     var lastSelectedIndex by remember { mutableStateOf(-1) }
 
+    // Lottie 动画提醒
+    val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.view))
+    val lottieAnimationState by animateLottieCompositionAsState(
+        composition = lottieComposition,
+        iterations = LottieConstants.IterateForever,
+        isPlaying = true
+    )
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        // 设置 Lottie 动画为背景并放大一些以避免白边
+        LottieAnimation(
+            composition = lottieComposition,
+            progress = lottieAnimationState,
+            modifier = Modifier
+                .fillMaxSize()
+                .scale(1.4f) // 根据动画和屏幕尺寸调整这个值
+        )
+
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // 可以根据需要添加标题或指示器
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
                 contentPadding = PaddingValues(all = 8.dp),
                 modifier = Modifier.padding(16.dp)
             ) {
                 items(images.size) { index ->
-                    if (!isMatched[index]) {  // 不显示已被匹配的卡片
+                    if (!isMatched[index]) {
                         CardView(
                             imageResource = if (selectedImages[index]) images[index].first else CARD_BACK_IMAGE,
                             onClick = {
@@ -78,7 +91,7 @@ fun GameScreen(navController: NavController) {
                                             foundPairs++
                                         } else {
                                             scope.launch {
-                                                delay(1000) // 等待1秒
+                                                delay(1000)
                                                 selectedImages[index] = false
                                                 selectedImages[lastSelectedIndex] = false
                                                 lastSelectedIndex = -1
@@ -119,7 +132,7 @@ fun generateImages(context: Context): List<Pair<Int, Boolean>> {
     for (i in 1..CARD_NUMBERS) {
         val imageName = "img_$i"
         val imageResourceId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
-        images.add(imageResourceId) // 由于卡片是成对的，所以每个图片资源添加两次
+        images.add(imageResourceId)
         images.add(imageResourceId)
     }
     images.shuffle()
@@ -130,7 +143,7 @@ object SoundUtil {
     var mediaPlayer: MediaPlayer? = null
 
     fun playSound(context: Context, resourceId: Int) {
-        release() // 释放之前的 mediaPlayer 资源
+        release()
         mediaPlayer = MediaPlayer.create(context, resourceId)
         mediaPlayer?.start()
         mediaPlayer?.setOnCompletionListener {
@@ -150,7 +163,6 @@ object MyColors {
 }
 
 const val CARD_NUMBERS = 8
-
 
 
 
