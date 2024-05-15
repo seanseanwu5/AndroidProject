@@ -5,6 +5,7 @@ import android.os.Message
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ class IgViewModel @Inject constructor(
     val signedIn = mutableStateOf(false)
     val inProgress = mutableStateOf(false)
     val popupNotification = mutableStateOf<com.example.myapplication.Event<String>?>(null)
+
 
     fun onSignup(email: String, pass: String) {
         inProgress.value = true
