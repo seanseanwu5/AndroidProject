@@ -1,7 +1,6 @@
 package com.example.myapplication.auth
 
 import android.content.Context
-import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -38,6 +40,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 val CARD_BACK_IMAGE = R.drawable.card_back
+const val CARD_NUMBERS = 8
 
 @Composable
 fun GameScreen(navController: NavController) {
@@ -46,13 +49,21 @@ fun GameScreen(navController: NavController) {
 
     val images = remember { generateImages(context) }
 
+    // Now properly remembered
     val selectedImages = remember { mutableStateListOf<Boolean>().apply { addAll(List(images.size) { false }) } }
     val isMatched = remember { mutableStateListOf<Boolean>().apply { addAll(List(images.size) { false }) } }
 
+    // Now properly remembered
     var foundPairs by remember { mutableStateOf(0) }
     var lastSelectedIndex by remember { mutableStateOf(-1) }
+    var attemptCounts by remember { mutableStateOf(0) }
 
-    // Lottie 动画提醒
+    // Derived state to determine game completion, doesn't need to be remembered
+//    val gameCompleted by derivedStateOf { foundPairs == CARD_NUMBERS }
+
+    // The showCompletionDialog state must be remembered
+    val showCompletionDialog = remember { mutableStateOf(false) }
+
     val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.view))
     val lottieAnimationState by animateLottieCompositionAsState(
         composition = lottieComposition,
@@ -61,16 +72,16 @@ fun GameScreen(navController: NavController) {
     )
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        // 设置 Lottie 动画为背景并放大一些以避免白边
         LottieAnimation(
             composition = lottieComposition,
             progress = lottieAnimationState,
             modifier = Modifier
                 .fillMaxSize()
-                .scale(1.4f) // 根据动画和屏幕尺寸调整这个值
+                .scale(1.4f)
         )
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("翻牌次數: $attemptCounts", modifier = Modifier.padding(bottom = 20.dp))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
                 contentPadding = PaddingValues(all = 8.dp),
@@ -84,11 +95,14 @@ fun GameScreen(navController: NavController) {
                                 if (!selectedImages[index]) {
                                     selectedImages[index] = true
                                     if (lastSelectedIndex >= 0) {
+                                        // Check if a pair is selected
+                                        attemptCounts++
                                         if (images[index] == images[lastSelectedIndex]) {
                                             isMatched[index] = true
                                             isMatched[lastSelectedIndex] = true
                                             lastSelectedIndex = -1
                                             foundPairs++
+                                            if (foundPairs == CARD_NUMBERS) showCompletionDialog.value = true
                                         } else {
                                             scope.launch {
                                                 delay(1000)
@@ -105,6 +119,18 @@ fun GameScreen(navController: NavController) {
                         )
                     }
                 }
+            }
+            if (showCompletionDialog.value) {
+                AlertDialog(
+                    onDismissRequest = { showCompletionDialog.value = false },
+                    title = { Text("遊戲完成！") },
+                    text = { Text("你總共翻了 $attemptCounts 次才完成遊戲。") },
+                    confirmButton = {
+                        Button(onClick = { showCompletionDialog.value = false }) {
+                            Text("太好了！")
+                        }
+                    }
+                )
             }
         }
     }
@@ -139,122 +165,7 @@ fun generateImages(context: Context): List<Pair<Int, Boolean>> {
     return images.map { it to false }
 }
 
-object SoundUtil {
-    var mediaPlayer: MediaPlayer? = null
-
-    fun playSound(context: Context, resourceId: Int) {
-        release()
-        mediaPlayer = MediaPlayer.create(context, resourceId)
-        mediaPlayer?.start()
-        mediaPlayer?.setOnCompletionListener {
-            release()
-        }
-    }
-
-    fun release() {
-        mediaPlayer?.release()
-        mediaPlayer = null
-    }
-}
-
 object MyColors {
     val Yellow = Color(0xFFFFEB3B)
     val White = Color(0xFFFFFFFF)
 }
-
-const val CARD_NUMBERS = 8
-
-
-
-
-
-//package com.example.myapplication.auth
-//
-//
-//import android.content.Context
-//import android.media.MediaPlayer
-//import android.os.Bundle
-//import android.text.Layout.Alignment
-//import androidx.activity.ComponentActivity
-//import androidx.activity.compose.setContent
-//import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.material3.contentColorFor
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.getValue
-//import androidx.compose.runtime.mutableIntStateOf
-//import androidx.compose.runtime.mutableStateOf
-//import androidx.compose.runtime.remember
-//import androidx.compose.runtime.rememberCoroutineScope
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.platform.LocalContext
-//import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-//import java.lang.reflect.Modifier
-//import kotlin.coroutines.jvm.internal.CompletedContinuation.context
-//
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        installSplashScreen()
-//        setContent {
-//            MyMemoryTheme {
-//                Box(
-//                    modifier = Modifier.fillMaxSize(),
-//                    contentAlignment = Alignment.Center
-//                ){
-//                    MemoryGame()
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//@composable
-//private fun MemoryGame(){
-//    val context = LocalContext.current
-//    var images = remember { generateImages(context) }
-//    var selectedImages by remember { mutableStateOf(images.map { -1 to false })}
-//    var foundParis by remember { mutableIntStateOf(0) }
-//    var lastSelectedImage by remember { mutableIntStateOf(-1) }
-//    var imageNumber by remember { mutableIntStateOf(1) }
-//    var lastSelectedIndex by remember { mutableIntStateOf(-1) }
-//    var canPlay by remember { mutableIntStateOf(true) }
-//    val scope = rememberCoroutineScope()
-//    var elapsedTime by remember { mutableIntStateOf(0L) }
-//    var showTime by remember { mutableIntStateOf(true) }
-//    var timeText by remember { mutableIntStateOf("00:00: sg") }
-//}
-//
-//
-//fungenerateImage(context: Context) :List<Pair<Int, Boolean>>{
-//    val images = mutableListOf<<Int>()
-//    val numberOfPairs = 8
-//    for (i in 1 ..numberOfPairs){
-//        val imageName = "img_$i"
-//        val imageResourceId = content.resource.getIdentifier(imageName, "drawable", context.packageName)
-//        images.add(imageResourceId)
-//        images.add(imageResourceId)
-//    }
-//    images.shuffle()
-//    return images.map { it to false }
-//}
-//
-//object SoundUtil {
-//    val mediaPlayer:MediaPlayer? = null
-//    fun playSound(context: Context, resourceId: Int) {
-//        mediaPlayer?. release()
-//        mediaPlayer = MediaPlayer.create(context, resourceId)
-//        mediaPlayer?.start()
-//        mediaPlayer?.setOnCompletionListener {
-//            relese()
-//        }
-//    }
-//    fun release(){
-//        mediaPlayer?. release()
-//        mediaPlayer = null
-//    }
-//}
-//object  MyColors{
-//    val Yellow = Color( color: 0xFFFFEB3B)
-//    val White = Color(color: 0xFFFFFFFF)
-//}

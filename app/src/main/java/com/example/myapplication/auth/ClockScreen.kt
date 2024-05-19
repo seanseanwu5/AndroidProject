@@ -5,7 +5,13 @@ import android.media.MediaPlayer
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.animation.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -14,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,6 +31,24 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.platform.LocalContext
 
+@Composable
+fun shakeEffect(): Float {
+    val infiniteTransition = rememberInfiniteTransition()
+    val shakeAnim = infiniteTransition.animateFloat(
+        initialValue = -1f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 300 // 抖动效果的持续时间
+                -1f at 0 with LinearEasing // 从负方向开始抖动
+                1f at 100 with LinearEasing // 向正方向抖动
+                -1f at 200 with LinearEasing // 再次向负方向抖动
+            },
+            repeatMode = RepeatMode.Reverse // 动画结束后反向执行
+        )
+    )
+    return shakeAnim.value
+}
 
 fun setupMediaPlayerAndVibrate(context: Context): MediaPlayer? {
     val mediaPlayer = try {
@@ -50,10 +75,12 @@ fun setupMediaPlayerAndVibrate(context: Context): MediaPlayer? {
 }
 @Composable
 fun ClockScreen() {
+    val shake = shakeEffect()
     val context = LocalContext.current
     val currentTime = rememberTime()
     val showImage = remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(if (showImage.value) 4f else 0f)
+    val scale by animateFloatAsState(if (showImage.value) 5f else 0f)
+
 
     LaunchedEffect(Unit) {
         delay(2800) // 现在改为延后2.8秒播放音频
@@ -80,9 +107,16 @@ fun ClockScreen() {
 
         AnimatedVisibility(visible = showImage.value, enter = fadeIn() + scaleIn(), exit = fadeOut() + scaleOut()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Image(painter = painterResource(id = R.drawable.hr),
+                Image(
+                    painter = painterResource(id = R.drawable.hr),
                     contentDescription = "hr image",
-                    modifier = Modifier.scale(scale))
+                    modifier = Modifier
+                        // 添加图层变换
+                        .graphicsLayer {
+                            translationX = shake * 10f // 乘以一个值来放大抖动效果
+                        }
+                        .scale(scale)
+                )
             }
         }
     }

@@ -14,8 +14,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.auth.GameScreen
+import com.example.myapplication.auth.GameScreen1
 import com.example.myapplication.auth.LoginScreen
 import com.example.myapplication.auth.MainScreen
+import com.example.myapplication.auth.Meme2Screen
 import com.example.myapplication.auth.MemeScreen
 import com.example.myapplication.auth.SignupScreen
 import com.example.myapplication.auth.SuccessScreen
@@ -77,14 +79,18 @@ fun AuthenticationApp(onBackPressedDispatcher: OnBackPressedDispatcher) {
         composable("piano") {
             com.example.myapplication.auth.ClockScreen()
         }
-        composable("bus") {
-            com.example.myapplication.auth.BusScreen()
+        composable("cross") {
+            val viewModel = hiltViewModel<GameViewModel>() // 從 Hilt 中取得 GameViewModel 的實例。
+            GameScreen1(viewModel, navController) // 將它和 navController 傳給 GameScreen1 組件。
         }
         composable("meme") {
             MemeScreen(navController)
         }
         composable("game"){
             GameScreen(navController)
+        }
+        composable("rac"){
+            Meme2Screen(navController)
         }
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -74,14 +75,18 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
 //////////////////////////////////////////////////////////
     Box(
         contentAlignment = Alignment.BottomStart, // Box 容器根据这个属性来定位内容
-        modifier = Modifier.fillMaxSize() // Box 容器填滿整个屏幕
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable { navController.navigate("rac") }//填這裡就可以，為什麼
+            // Box 容器填滿整个屏幕
     ) {
         LottieAnimation(
-            composition,
+            composition = composition,
             modifier = Modifier
                 .size(200.dp) // 这里设置动画的大小
                 .align(Alignment.BottomStart) // 定位到左下角
-                .padding(start = 16.dp, bottom = 16.dp), // 根据需要可以添加填充来调整精确位置
+                .padding(start = 16.dp, bottom = 16.dp),// 根据需要可以添加填充来调整精确位置
+//                .clickable { navController.navigate("rac") }
             iterations = LottieConstants.IterateForever // 动画无限重复
         )
 ////////////////////////////////////////////////////////////
