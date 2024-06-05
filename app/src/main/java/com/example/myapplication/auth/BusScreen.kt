@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusScreen() {
-    // 初始化公車時刻表
     val busSchedule = remember { mutableStateOf(initBusSchedule()) }
     var busRoute by remember { mutableStateOf("") }
     var time by remember { mutableStateOf("") }
@@ -71,25 +70,21 @@ fun BusScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 显示时刻表
         schedule.forEach {
             Text(it)
         }
     }
 }
 
-// 初始化公車时刻表函数
 fun initBusSchedule(): Map<String, List<String>> {
     val busSchedule = mutableMapOf<String, List<String>>()
 
     busSchedule["Route 1"] = listOf("08:00", "10:00", "12:00", "14:00")
     busSchedule["Route 2"] = listOf("09:00", "11:00", "13:00", "15:00")
-    // ... 添加更多路线
 
     return busSchedule
 }
 
-// 根据公車路線和时间获取时刻表函数
 fun getBusSchedule(busRoute: String, time: String, schedule: Map<String, List<String>>): List<String> {
     val scheduleList: MutableList<String> = mutableListOf()
     schedule[busRoute]?.filter { it >= time }?.let {
@@ -97,69 +92,3 @@ fun getBusSchedule(busRoute: String, time: String, schedule: Map<String, List<St
     }
     return scheduleList
 }
-//
-//import android.R
-//import android.os.Bundle
-//import android.widget.ArrayAdapter
-//import android.widget.Button
-//import android.widget.EditText
-//import android.widget.ListView
-//import androidx.appcompat.app.AppCompatActivity
-//
-//
-//class MainActivity : AppCompatActivity() {
-//    private var busSchedule: MutableMap<String, List<String>>? = null
-//    protected fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//
-//        // 初始化公車時刻表
-//        initBusSchedule()
-//        val busRouteInput: EditText = findViewById(R.id.busRouteInput)
-//        val timeInput: EditText = findViewById(R.id.timeInput)
-//        val searchButton: Button = findViewById(R.id.searchButton)
-//        val scheduleListView: ListView = findViewById(R.id.scheduleListView)
-//        searchButton.setOnClickListener {
-//            val busRoute = busRouteInput.text.toString()
-//            val time = timeInput.text.toString()
-//            val schedule = getBusSchedule(busRoute, time)
-//            val adapter: ArrayAdapter<String> = ArrayAdapter<Any?>(
-//                this@MainActivity,
-//                R.layout.simple_list_item_1, schedule
-//            )
-//            scheduleListView.adapter = adapter
-//        }
-//    }
-//
-//    // 初始化公車時刻表
-//    private fun initBusSchedule() {
-//        busSchedule = HashMap()
-//        val route1Schedule: MutableList<String> = ArrayList()
-//        route1Schedule.add("08:00")
-//        route1Schedule.add("10:00")
-//        route1Schedule.add("12:00")
-//        route1Schedule.add("14:00")
-//        busSchedule["Route 1"] = route1Schedule
-//        val route2Schedule: MutableList<String> = ArrayList()
-//        route2Schedule.add("09:00")
-//        route2Schedule.add("11:00")
-//        route2Schedule.add("13:00")
-//        route2Schedule.add("15:00")
-//        busSchedule["Route 2"] = route2Schedule
-//
-//        // 添加更多公車路線的時刻表
-//    }
-//
-//    // 根據公車路線和時間獲取時刻表
-//    private fun getBusSchedule(busRoute: String, time: String): List<String> {
-//        val schedule: MutableList<String> = ArrayList()
-//        if (busSchedule!!.containsKey(busRoute)) {
-//            for (scheduleTime in busSchedule!![busRoute]!!) {
-//                if (scheduleTime.compareTo(time) >= 0) {
-//                    schedule.add(scheduleTime)
-//                }
-//            }
-//        }
-//        return schedule
-//    }
-//}

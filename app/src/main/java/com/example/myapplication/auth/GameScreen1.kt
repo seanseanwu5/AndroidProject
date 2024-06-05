@@ -1,5 +1,7 @@
 package com.example.myapplication.auth
 
+import android.content.Context
+import android.media.MediaPlayer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -30,12 +32,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -97,6 +101,17 @@ fun GameScreen1(
     navController: NavController
 ){
 
+    val context = LocalContext.current
+    DisposableEffect(key1 = "MediaPlayer") {
+        val mediaPlayer = MediaPlayer.create(context, R.raw.audio).apply {
+            isLooping = true
+            start()
+        }
+        onDispose {
+            mediaPlayer.release()
+        }
+    }
+
     val state = viewModel.state
 
     Column(
@@ -112,7 +127,6 @@ fun GameScreen1(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Player 'O'
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "玩家 ", fontSize = 16.sp)
 
@@ -124,10 +138,8 @@ fun GameScreen1(
                 Text(text = " : ${state.playerCircleCount}", fontSize = 16.sp)
             }
 
-            // Draw
             Text(text = "平局 : ${state.drawCount}", fontSize = 16.sp)
 
-            // Player 'X'
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "玩家 ", fontSize = 16.sp)
                 Image(
@@ -138,15 +150,7 @@ fun GameScreen1(
                 Text(text = " : ${state.playerCrossCount}", fontSize = 16.sp)
             }
         }
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Text(text = "Player 'O' : ${state.playerCircleCount}", fontSize = 16.sp)
-//            Text(text = "Draw : ${state.drawCount}", fontSize = 16.sp)
-//            Text(text = "Player 'X' : ${state.playerCrossCount}", fontSize = 16.sp)
-//        }
+
         Text(
             text = "yo! battle!",
             fontSize = 50.sp,
@@ -224,19 +228,17 @@ fun GameScreen1(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // 使用BlinkText代替原本的Text，应用于显示game state hints
             BlinkText(
                 text = state.hintText,
                 fontSize = 24.sp,
                 fontStyle = FontStyle.Normal,
-                color = GreenishYellow // 或者根据您的UI需求选择合适的颜色
+                color = GreenishYellow
             )
             Button(
                 onClick = {
                     viewModel.onAction(UserAction.PlayAgainButtonClicked)
                 },
                 shape = RoundedCornerShape(5.dp),
-//                elevation = ButtonDefaults.elevation(5.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = BlueCustom),
             ) {
                 Text(
@@ -274,3 +276,4 @@ fun GameScreenPreview() {
     val viewModel = GameViewModel()
     GameScreen1(viewModel = viewModel, navController = navController)
 }
+

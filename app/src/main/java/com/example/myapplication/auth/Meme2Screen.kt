@@ -17,11 +17,10 @@ fun Meme2Screen(navController: NavController) {
     val context = LocalContext.current
     val videoView = remember { VideoView(context) }
 
-    // Move DisposableEffect to be outside of AndroidView creation, but still inside Composable context
     DisposableEffect(key1 = videoView) {
-        videoView.start() // Start video automatically
+        videoView.start()
         onDispose {
-            videoView.stopPlayback() // Stop video playback on dispose
+            videoView.stopPlayback()
         }
     }
 
@@ -30,7 +29,6 @@ fun Meme2Screen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .graphicsLayer {
-                // Adjust the scale factor to zoom in the video. For example, 1.2f means 120% of the original size.
                 scaleX = 1f
                 scaleY = 1f
             }
@@ -38,7 +36,6 @@ fun Meme2Screen(navController: NavController) {
         val videoUri = "android.resource://${context.packageName}/${R.raw.meme2}"
         view.setVideoURI(android.net.Uri.parse(videoUri))
         view.setOnCompletionListener {
-            // Video playback is complete, pop backStack to return to the previous screen
             navController.popBackStack()
         }
     }

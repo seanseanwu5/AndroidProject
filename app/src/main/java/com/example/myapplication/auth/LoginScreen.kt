@@ -74,20 +74,18 @@ fun LoginScreen(navController: NavController, vm: FbViewModel) {
     )
 //////////////////////////////////////////////////////////
     Box(
-        contentAlignment = Alignment.BottomStart, // Box 容器根据这个属性来定位内容
+        contentAlignment = Alignment.BottomStart,
         modifier = Modifier
             .fillMaxSize()
-            .clickable { navController.navigate("rac") }//填這裡就可以，為什麼
-            // Box 容器填滿整个屏幕
+            .clickable { navController.navigate("rac") }
     ) {
         LottieAnimation(
             composition = composition,
             modifier = Modifier
-                .size(200.dp) // 这里设置动画的大小
-                .align(Alignment.BottomStart) // 定位到左下角
-                .padding(start = 16.dp, bottom = 16.dp),// 根据需要可以添加填充来调整精确位置
-//                .clickable { navController.navigate("rac") }
-            iterations = LottieConstants.IterateForever // 动画无限重复
+                .size(200.dp)
+                .align(Alignment.BottomStart)
+                .padding(start = 16.dp, bottom = 16.dp),
+            iterations = LottieConstants.IterateForever
         )
 ////////////////////////////////////////////////////////////
         Column(

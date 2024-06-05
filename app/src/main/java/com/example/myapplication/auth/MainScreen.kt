@@ -50,7 +50,6 @@ fun MainScreen(navController: NavController, vm: FbViewModel) {
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()
         )
-        // Foreground column with contents
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -60,14 +59,9 @@ fun MainScreen(navController: NavController, vm: FbViewModel) {
 
             LottieAnimation(
                 composition,
-                modifier = Modifier.size(300.dp), // 设置动画的大小
-                iterations = LottieConstants.IterateForever // 设置动画播放的次数，LottieConstants.IterateForever 表示无限循环播放
+                modifier = Modifier.size(300.dp),
+                iterations = LottieConstants.IterateForever
             )
-//            Image(
-//                painter = painterResource(id = R.drawable.lu),//我這裡想要換成welcome動畫raw檔案，檔案名稱叫做welcome.json
-//                contentDescription = null,
-//                modifier = Modifier.size(200.dp)
-//            )
             Text(
                 text = "Welcome",
                 color = Color.White,
@@ -76,7 +70,6 @@ fun MainScreen(navController: NavController, vm: FbViewModel) {
             )
             Spacer(modifier = Modifier.height(80.dp))
 
-            // Box with a gradient background
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(50.dp))

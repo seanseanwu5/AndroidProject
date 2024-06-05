@@ -1,6 +1,7 @@
 package com.example.myapplication.auth
 
 import android.content.Context
+import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -46,31 +48,30 @@ const val CARD_NUMBERS = 8
 fun GameScreen(navController: NavController) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
     val images = remember { generateImages(context) }
-
-    // Now properly remembered
     val selectedImages = remember { mutableStateListOf<Boolean>().apply { addAll(List(images.size) { false }) } }
     val isMatched = remember { mutableStateListOf<Boolean>().apply { addAll(List(images.size) { false }) } }
-
-    // Now properly remembered
     var foundPairs by remember { mutableStateOf(0) }
     var lastSelectedIndex by remember { mutableStateOf(-1) }
     var attemptCounts by remember { mutableStateOf(0) }
-
-    // Derived state to determine game completion, doesn't need to be remembered
-//    val gameCompleted by derivedStateOf { foundPairs == CARD_NUMBERS }
-
-    // The showCompletionDialog state must be remembered
     val showCompletionDialog = remember { mutableStateOf(false) }
-
     val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.view))
+    var isCardFlipping by remember { mutableStateOf(false) }
+
+    DisposableEffect(key1 = "MediaPlayer") {
+        val mediaPlayer = MediaPlayer.create(context, R.raw.music).apply {
+            isLooping = true
+            start()
+        }
+        onDispose {
+            mediaPlayer.release()
+        }
+    }
     val lottieAnimationState by animateLottieCompositionAsState(
         composition = lottieComposition,
         iterations = LottieConstants.IterateForever,
         isPlaying = true
     )
-
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         LottieAnimation(
             composition = lottieComposition,
@@ -79,7 +80,6 @@ fun GameScreen(navController: NavController) {
                 .fillMaxSize()
                 .scale(1.4f)
         )
-
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text("翻牌次數: $attemptCounts", modifier = Modifier.padding(bottom = 20.dp))
             LazyVerticalGrid(
@@ -92,16 +92,17 @@ fun GameScreen(navController: NavController) {
                         CardView(
                             imageResource = if (selectedImages[index]) images[index].first else CARD_BACK_IMAGE,
                             onClick = {
-                                if (!selectedImages[index]) {
+                                if (!isCardFlipping && !selectedImages[index]) {
+                                    isCardFlipping = true
                                     selectedImages[index] = true
                                     if (lastSelectedIndex >= 0) {
-                                        // Check if a pair is selected
                                         attemptCounts++
                                         if (images[index] == images[lastSelectedIndex]) {
                                             isMatched[index] = true
                                             isMatched[lastSelectedIndex] = true
                                             lastSelectedIndex = -1
                                             foundPairs++
+                                            isCardFlipping = false
                                             if (foundPairs == CARD_NUMBERS) showCompletionDialog.value = true
                                         } else {
                                             scope.launch {
@@ -109,10 +110,12 @@ fun GameScreen(navController: NavController) {
                                                 selectedImages[index] = false
                                                 selectedImages[lastSelectedIndex] = false
                                                 lastSelectedIndex = -1
+                                                isCardFlipping = false
                                             }
                                         }
                                     } else {
                                         lastSelectedIndex = index
+                                        isCardFlipping = false
                                     }
                                 }
                             }
